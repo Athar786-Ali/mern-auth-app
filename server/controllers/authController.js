@@ -71,7 +71,15 @@ export const login = async (req,res)=>{
 
         })
 
-        return res.json({success:true })
+        return res.json({
+        success: true,
+        user: {
+       name: user.name,
+       email: user.email,
+       isAccountVerified: user.isAccountVerified
+        }
+    });
+
         
     }catch(error){
        res.json({success:false,message:error.message})
@@ -108,7 +116,7 @@ export const sendVerifyOtp = async (req,res) =>{
 
         const otp= String(Math.floor(100000+Math.random() * 900000));
         user.verifyOtp = otp;
-        user.verifyOtpExpiry = Date.now() + 24*60*60*1000;
+        user.verifyOtpExpiryAt = Date.now() + 24*60*60*1000;
         await user.save();
 
         const mailOptions = {
@@ -147,17 +155,18 @@ export const verifyEmail = async (req,res) =>{
         //     return res.json({success:false,message:'Account already verified'})
         //  }
 
-         if(user.verifyOtp === '' || user.verifyOtp !== otp){
-            return res.json({success:false,message:'Invalid or expired OTP'})
-         }
-         
-         if(user.verifyOtpExpiry < Date.now()){
-            return res.json({success:false,message:'OTP has expired'})
-         }
+         if (!user.verifyOtp || user.verifyOtp !== otp) {
+           return res.json({ success:false, message:"Invalid OTP" });
+           }
+
+        if(user.verifyOtpExpiryAt < Date.now()) {
+            return res.json({ success:false, message:"OTP expired" });
+            }
+
         
          user.isAccountVerified = true;
          user.verifyOtp = null;
-         user.verifyOtpExpiry = null;
+         user.verifyOtpExpiryAt = null;
 
          await user.save();
          res.json({success:true,message:'Email verified successfully'})
@@ -252,4 +261,5 @@ export const resetPassword = async (req,res) =>{
 
     }   
 }   
+
 

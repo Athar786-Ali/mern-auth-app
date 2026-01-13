@@ -14,7 +14,7 @@ export default function Dashboard() {
     api
       .get("/user/data")
       .then((res) => {
-        setUser(res.data.user);
+       setUser(res.data.userData);
         setLoading(false);
       })
       .catch(() => {

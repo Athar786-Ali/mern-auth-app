@@ -20,9 +20,16 @@ export default function Login() {
     try {
       const res = await api.post("/auth/login", form);
 
-      if (res.data.success) {
-        navigate("/dashboard");
+      // ❗ If login failed (incorrect password OR user not found)
+      if (!res.data.success) {
+        alert(res.data.message || "Invalid email or password");
+        setLoading(false);
+        return;
       }
+
+      // ✔ Successful login
+      navigate("/dashboard");
+
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
     }

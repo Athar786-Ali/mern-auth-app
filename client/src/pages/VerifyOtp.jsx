@@ -9,6 +9,23 @@ export default function VerifyOtp() {
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
 
+  // 👉 NEW: Send OTP function
+  const sendOtp = async () => {
+    setLoading(true);
+    try {
+      const res = await api.post("/auth/send-verify-otp");
+      if (res.data.success) {
+        alert("OTP sent successfully!");
+      } else {
+        alert(res.data.message);
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to send OTP");
+    }
+    setLoading(false);
+  };
+
+  // Existing Verify OTP Function
   const handleVerify = async () => {
     setLoading(true);
 
@@ -26,6 +43,7 @@ export default function VerifyOtp() {
     setLoading(false);
   };
 
+  // Existing Resend OTP function
   const resendOtp = async () => {
     setResendLoading(true);
 
@@ -49,9 +67,23 @@ export default function VerifyOtp() {
         </h2>
 
         <p className="text-center text-gray-300 mb-4">
+          Click "Send OTP" to receive the verification code.
+        </p>
+
+        {/* 👉 NEW SEND OTP BUTTON */}
+        <button
+          onClick={sendOtp}
+          disabled={loading}
+          className="w-full mb-5 py-3 bg-green-600 hover:bg-green-700 rounded-xl text-white font-semibold text-lg shadow-lg transition-all"
+        >
+          {loading ? "Sending OTP..." : "Send OTP"}
+        </button>
+
+        <p className="text-center text-gray-300 mb-4">
           Enter the 6-digit verification code sent to your email.
         </p>
 
+        {/* OTP INPUT */}
         <input
           type="text"
           maxLength={6}
@@ -59,6 +91,7 @@ export default function VerifyOtp() {
           onChange={(e) => setOtp(e.target.value)}
         />
 
+        {/* VERIFY OTP BUTTON */}
         <button
           onClick={handleVerify}
           className="w-full mt-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl text-white font-semibold text-lg shadow-lg transition-all"
@@ -67,6 +100,7 @@ export default function VerifyOtp() {
           {loading ? "Verifying..." : "Verify OTP"}
         </button>
 
+        {/* RESEND OTP BUTTON (same as before) */}
         <div className="mt-6 text-center">
           <button
             onClick={resendOtp}

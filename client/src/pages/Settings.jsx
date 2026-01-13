@@ -1,6 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { logoutUser } from "../api/logout";
 
 export default function Settings() {
+
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    const res = await logoutUser();
+    if (res.success) {
+      navigate("/login");
+    } else {
+      alert("Logout failed!");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-6">
       <div className="w-full max-w-2xl bg-white/10 backdrop-blur-lg p-8 rounded-2xl border border-white/20 shadow-xl">
@@ -43,6 +56,7 @@ export default function Settings() {
 
           <div className="space-y-3">
             <button
+              onClick={handleLogout}
               className="w-full bg-red-500/80 hover:bg-red-600 text-white font-semibold p-3 rounded-lg transition shadow-lg"
             >
               🚪 Logout

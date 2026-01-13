@@ -15,30 +15,39 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      // Register user
-      const res = await api.post("/auth/register", form);
+  try {
+    // Register user
+    const res = await api.post("/auth/register", form);
 
-      if (res.data.success) {
-        // Auto-login after register
-        const loginRes = await api.post("/auth/login", {
-          email: form.email,
-          password: form.password,
-        });
-
-        if (loginRes.data.success) {
-          navigate("/verify-otp");
-        }
-      }
-    } catch (err) {
-      alert(err.response?.data?.message || "Registration failed");
+    // If registration failed (email already exists)
+    if (!res.data.success) {
+      alert(res.data.message);
+      setLoading(false);
+      return;
     }
 
-    setLoading(false);
-  };
+    // Auto-login after successful register
+    const loginRes = await api.post("/auth/login", {
+      email: form.email,
+      password: form.password,
+    });
+
+    if (loginRes.data.success) {
+      navigate("/dashboard");
+    } else {
+      alert("Login failed after registration");
+    }
+
+  } catch (err) {
+    alert(err.response?.data?.message || "Registration failed");
+  }
+
+  setLoading(false);
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center px-4">
