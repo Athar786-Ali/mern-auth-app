@@ -19,6 +19,7 @@ export default function Login() {
 
     try {
       const res = await api.post("/auth/login", form);
+      console.log(res);
 
       // ❗ If login failed (incorrect password OR user not found)
       if (!res.data.success) {
