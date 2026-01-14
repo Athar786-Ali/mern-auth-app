@@ -7,15 +7,19 @@ import authRouter from "./routes/authRoutes.js"
 import userRouter from "./routes/userRoutes.js"
 
 const app=express()
+app.set("trust proxy", 1);
+
 const port = process.env.PORT || 4000
 
 connectDB();
 
 app.use(express.json())
 app.use(cookieParser())
-
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: [
+    "http://localhost:3000",
+    "https://fronted-mern-auth.vercel.app"
+  ],
   credentials: true
 }));
 
