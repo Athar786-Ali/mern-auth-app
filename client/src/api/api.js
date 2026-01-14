@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://backend-mern-auth-g9r2.onrender.com/api",
+  baseURL: "https://backend-mern-auth-pi.vercel.app/api",
   withCredentials: true
 });
 
