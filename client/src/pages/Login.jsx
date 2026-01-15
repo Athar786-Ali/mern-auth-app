@@ -1,20 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/api";
-
-
-
-useEffect(() => {
-  api.post("/auth/is-auth")
-    .then((res) => {
-      if (res.data.success) {
-        Navigate("/dashboard"); // user already authenticated
-      }
-    })
-    .catch(() => {});
-}, []);
-
-
 
 export default function Login() {
 
@@ -27,6 +13,17 @@ export default function Login() {
 
   const [loading, setLoading] = useState(false);
 
+  // 🔥 Auto redirect if already authenticated
+  useEffect(() => {
+    api.post("/auth/is-auth")
+      .then((res) => {
+        if (res.data.success) {
+          navigate("/dashboard"); // user already logged in
+        }
+      })
+      .catch(() => {});
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -34,14 +31,12 @@ export default function Login() {
     try {
       const res = await api.post("/auth/login", form);
 
-      // ❗ If login failed (incorrect password OR user not found)
       if (!res.data.success) {
         alert(res.data.message || "Invalid email or password");
         setLoading(false);
         return;
       }
 
-      // ✔ Successful login
       navigate("/dashboard");
 
     } catch (err) {
