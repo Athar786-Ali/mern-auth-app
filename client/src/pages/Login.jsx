@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import api from "../api/api";
 
 
@@ -8,11 +8,12 @@ useEffect(() => {
   api.post("/auth/is-auth")
     .then((res) => {
       if (res.data.success) {
-        navigate("/dashboard"); // user already authenticated
+        Navigate("/dashboard"); // user already authenticated
       }
     })
     .catch(() => {});
 }, []);
+
 
 
 export default function Login() {
