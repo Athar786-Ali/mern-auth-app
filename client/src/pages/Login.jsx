@@ -13,6 +13,9 @@ export default function Login() {
 
   const [loading, setLoading] = useState(false);
 
+  // ⭐ Checking state to prevent login page flash
+  const [checking, setChecking] = useState(true);
+
   // 🔥 Auto redirect if already authenticated
   useEffect(() => {
     api.post("/auth/is-auth")
@@ -21,8 +24,19 @@ export default function Login() {
           navigate("/dashboard"); // user already logged in
         }
       })
-      .catch(() => {});
+      .finally(() => {
+        setChecking(false);   // Check complete
+      });
   }, [navigate]);
+
+  // ⭐ Show loader while checking auth
+  if (checking) {
+    return (
+      <div className="h-screen flex justify-center items-center text-white text-xl">
+        Checking authentication...
+      </div>
+    );
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault();
